@@ -1,10 +1,16 @@
 <template>
   <div class="ml-5 mr-5">
     <div
+      v-bind:class="{ errorShake: isErrorShake }"
       class="mt-10"
       style="max-width: 600px; background-color: rgb(240, 240, 240); border: 1px solid rgb(130, 130, 130); border-radius: 5px; padding: 30px; margin: 0 auto; box-shadow: 0 0 10px rgb(150, 150, 150)"
     >
       <h1 class="text-center mb-4">Company Name</h1>
+
+      <div v-if="this.error != ''">
+        <v-alert type="error" v-bind="this.error" style="font-weight: bold;">{{this.error}}</v-alert>
+      </div>
+
       <div class>
         <div
           class="mb-4"
@@ -51,16 +57,71 @@ import AuthenticationService from "@/services/AuthenticationService";
 export default {
   data: () => ({
     email: "",
-    password: ""
+    password: "",
+    error: "",
+    isErrorShake: false
   }),
   methods: {
     async register() {
-      const response = await AuthenticationService.register({
-        email: this.email,
-        password: this.password
-      });
-      console.log(response.data);
+      try {
+        const response = await AuthenticationService.register({
+          email: this.email,
+          password: this.password
+        });
+      } catch (error) {
+        this.error = error.response.data.error;
+        this.isErrorShake = true;
+        setTimeout(() => {
+          this.isErrorShake = false;
+        }, 800);
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.errorShake {
+  /* Start the shake animation and make the animation last for 0.5 seconds */
+  animation: shake 0.75s;
+
+  /* When the animation is finished, start again */
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+</style>
