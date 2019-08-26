@@ -43,9 +43,13 @@
             style="width: 100%; box-shadow: 0 0 5px rgb(150, 150, 150)"
             height="50"
             color="success"
-            @click="register"
-          >Register!</v-btn>
+            @click="login"
+          >Login</v-btn>
         </div>
+        <p class="mt-1 text-center link" @click="registerPage">
+          New to our site?
+          <br />Sign Up!
+        </p>
       </div>
     </div>
   </div>
@@ -62,9 +66,12 @@ export default {
     isErrorShake: false
   }),
   methods: {
-    async register() {
+    registerPage() {
+      this.$router.push("/register");
+    },
+    async login() {
       try {
-        const response = await AuthenticationService.register({
+        const response = await AuthenticationService.login({
           email: this.email,
           password: this.password
         });
@@ -84,6 +91,16 @@ export default {
 </script>
 
 <style scoped>
+.link {
+  color: rgb(57, 93, 255);
+  margin-bottom: 0px;
+}
+
+.link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .errorShake {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 0.75s;
