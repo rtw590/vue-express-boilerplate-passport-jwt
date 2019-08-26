@@ -10,5 +10,8 @@ module.exports = {
       host: process.env.DB_HOST || "localhost",
       storage: "./projectDatabases.sqlite"
     }
+  },
+  authentication: {
+    jwtSecret: process.env.JWT_SECRET || "secret"
   }
 };
