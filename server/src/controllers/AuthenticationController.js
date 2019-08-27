@@ -13,6 +13,11 @@ module.exports = {
   async register(req, res) {
     try {
       const user = await User.create(req.body);
+      const userJson = user.toJSON();
+      res.send({
+        user: userJson,
+        token: jwtSignUser(userJson)
+      });
       res.send(user.toJSON());
     } catch (err) {
       res.status(400).send({
@@ -31,7 +36,7 @@ module.exports = {
       });
       if (!user) {
         return res.status(403).send({
-          error: "No user found"
+          error: "The login information is incorrect"
         });
       }
       const isPasswordValid = await user.comparePassword(password);

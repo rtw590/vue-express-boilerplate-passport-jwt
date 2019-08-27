@@ -11,7 +11,7 @@
         <v-alert type="error" v-bind="this.error" style="font-weight: bold;">{{this.error}}</v-alert>
       </div>
 
-      <div class>
+      <v-form ref="form">
         <div
           class="mb-4"
           style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150)"
@@ -22,6 +22,8 @@
             height="40"
             label="Email"
             v-model="email"
+            required
+            :rules="[rules.required]"
           ></v-text-field>
         </div>
         <div
@@ -35,6 +37,23 @@
             label="Password"
             v-model="password"
             type="password"
+            required
+            :rules="[rules.required]"
+          ></v-text-field>
+        </div>
+        <div
+          class="mb-4"
+          style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150)"
+        >
+          <v-text-field
+            background-color="white"
+            color="success"
+            height="40"
+            label="Confirm Password"
+            v-model="password2"
+            type="password"
+            required
+            :rules="[rules.required]"
           ></v-text-field>
         </div>
         <div style="width: 60%; margin: 0 auto;">
@@ -46,7 +65,7 @@
             @click="register"
           >Register!</v-btn>
         </div>
-      </div>
+      </v-form>
     </div>
   </div>
 </template>
@@ -58,25 +77,46 @@ export default {
   data: () => ({
     email: "",
     password: "",
+    password2: "",
     error: "",
-    isErrorShake: false
+    isErrorShake: false,
+    rules: {
+      required: value => !!value || "Required."
+    }
   }),
   methods: {
     async register() {
-      try {
-        const response = await AuthenticationService.register({
-          email: this.email,
-          password: this.password
-        });
-        this.$store.dispatch("setToken", response.data.token);
-        this.$store.dispatch("setUser", response.data.user);
-        this.$router.push("/");
-      } catch (error) {
-        this.error = error.response.data.error;
+      this.$refs.form.validate();
+      if (this.email == "" || this.password == "" || this.password2 == "") {
+        this.error = "Please enter information for all of the fields";
         this.isErrorShake = true;
         setTimeout(() => {
           this.isErrorShake = false;
         }, 800);
+      } else {
+        if (this.password !== this.password2) {
+          this.error = "Passwords do not match";
+          this.isErrorShake = true;
+          setTimeout(() => {
+            this.isErrorShake = false;
+          }, 800);
+        } else {
+          try {
+            const response = await AuthenticationService.register({
+              email: this.email,
+              password: this.password
+            });
+            this.$store.dispatch("setToken", response.data.token);
+            this.$store.dispatch("setUser", response.data.user);
+            this.$router.push("/");
+          } catch (error) {
+            this.error = error.response.data.error;
+            this.isErrorShake = true;
+            setTimeout(() => {
+              this.isErrorShake = false;
+            }, 800);
+          }
+        }
       }
     }
   }

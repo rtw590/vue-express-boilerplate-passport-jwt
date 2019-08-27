@@ -11,7 +11,7 @@
         <v-alert type="error" v-bind="this.error" style="font-weight: bold;">{{this.error}}</v-alert>
       </div>
 
-      <div class>
+      <v-form ref="form">
         <div
           class="mb-4"
           style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150)"
@@ -21,6 +21,8 @@
             color="success"
             height="40"
             label="Email"
+            required
+            :rules="[rules.required]"
             v-model="email"
           ></v-text-field>
         </div>
@@ -33,6 +35,8 @@
             color="success"
             height="40"
             label="Password"
+            required
+            :rules="[rules.required]"
             v-model="password"
             type="password"
           ></v-text-field>
@@ -50,7 +54,7 @@
           New to our site?
           <br />Sign Up!
         </p>
-      </div>
+      </v-form>
     </div>
   </div>
 </template>
@@ -63,27 +67,39 @@ export default {
     email: "",
     password: "",
     error: "",
-    isErrorShake: false
+    isErrorShake: false,
+    rules: {
+      required: value => !!value || "Required."
+    }
   }),
   methods: {
     registerPage() {
       this.$router.push("/register");
     },
     async login() {
-      try {
-        const response = await AuthenticationService.login({
-          email: this.email,
-          password: this.password
-        });
-        this.$store.dispatch("setToken", response.data.token);
-        this.$store.dispatch("setUser", response.data.user);
-        this.$router.push("/");
-      } catch (error) {
-        this.error = error.response.data.error;
+      this.$refs.form.validate();
+      if (this.email == "" || this.password == "") {
+        this.error = "Please enter information for all of the fields";
         this.isErrorShake = true;
         setTimeout(() => {
           this.isErrorShake = false;
         }, 800);
+      } else {
+        try {
+          const response = await AuthenticationService.login({
+            email: this.email,
+            password: this.password
+          });
+          this.$store.dispatch("setToken", response.data.token);
+          this.$store.dispatch("setUser", response.data.user);
+          this.$router.push("/");
+        } catch (error) {
+          this.error = error.response.data.error;
+          this.isErrorShake = true;
+          setTimeout(() => {
+            this.isErrorShake = false;
+          }, 800);
+        }
       }
     }
   }
@@ -99,6 +115,10 @@ export default {
 .link:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.errorForm {
+  border: 1px solid red !important;
 }
 
 .errorShake {
