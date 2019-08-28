@@ -23,7 +23,7 @@
             label="Email"
             v-model="email"
             required
-            :rules="[rules.required]"
+            :rules="[rules.required, rules.email]"
           ></v-text-field>
         </div>
         <div
@@ -38,7 +38,7 @@
             v-model="password"
             type="password"
             required
-            :rules="[rules.required]"
+            :rules="[rules.required, rules.passwordLength]"
           ></v-text-field>
         </div>
         <div
@@ -53,7 +53,7 @@
             v-model="password2"
             type="password"
             required
-            :rules="[rules.required]"
+            :rules="[rules.required, rules.passwordLength]"
           ></v-text-field>
         </div>
         <div style="width: 60%; margin: 0 auto;">
@@ -81,7 +81,12 @@ export default {
     error: "",
     isErrorShake: false,
     rules: {
-      required: value => !!value || "Required."
+      required: value => !!value || "Required.",
+      email: value =>
+        (!!value.includes("@") && !!value.includes(".")) ||
+        "Must be valid email",
+      passwordLength: value =>
+        value.length >= 8 || "Password must be at least 8 characters."
     }
   }),
   methods: {
