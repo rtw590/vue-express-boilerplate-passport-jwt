@@ -16,6 +16,9 @@ app.use(bodyParser.json());
 // TODO chnage before production
 app.use(cors());
 
+// Passport config
+require("./passport");
+
 require("./routes")(app);
 
 sequelize.sync().then(() => {
