@@ -1,13 +1,11 @@
 <template>
   <div class="mt-3" style="margin: 0 auto; max-width: 800px;">
-    <h1>Welcome back, {{$store.state.user.email}}!</h1>
-    <v-btn
-      class="mb-2"
-      style="width: 100%; box-shadow: 0 0 5px rgb(150, 150, 150)"
-      height="50"
-      color="success"
-      @click="dashboard"
-    >Test</v-btn>
+    <div v-if="this.error != ''">
+      <v-alert type="error" v-bind="this.error" style="font-weight: bold;">{{this.error}}</v-alert>
+    </div>
+    <div v-if="$store.state.isUserLoggedIn">
+      <h1>Welcome back, {{$store.state.user.email}}!</h1>
+    </div>
   </div>
 </template>
 
@@ -15,12 +13,20 @@
 import AuthenticationService from "@/services/AuthenticationService";
 
 export default {
-  components: {},
-  methods: {
-    async dashboard() {
+  data: () => ({
+    error: "",
+    user: ""
+  }),
+  async mounted() {
+    try {
       const response = await AuthenticationService.dashboard();
-      console.log(response);
+    } catch (error) {
+      // Credentials failed. Logout user and instruct them to login
+      this.$store.dispatch("setToken", null);
+      this.$store.dispatch("setUser", null);
+      this.error = error.response.data.error;
     }
-  }
+  },
+  methods: {}
 };
 </script>
