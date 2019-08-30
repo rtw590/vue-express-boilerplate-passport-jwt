@@ -8,8 +8,8 @@ The client contains code for the Vue frontend. This includes vuetify and vuex
 The server is an express server
 
 # Getting started
-cd into the client folder and do an npm install
-run npm run serve to start development server
+cd into the client folder and do an npm install.
+Run npm run serve to start development server
 
-In another terminal, cd into server and do an npm install
-run node app to run the server
+In another terminal, cd into server and do an npm install.
+Run node app to run the server
