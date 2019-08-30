@@ -4,6 +4,7 @@ import Home from "./views/Home.vue";
 import Register from "./views/Register.vue";
 import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
+import Admin from "./views/Admin.vue";
 
 Vue.use(Router);
 
@@ -30,6 +31,11 @@ export default new Router({
       path: "/dashboard",
       name: "dashboard",
       component: Dashboard
+    },
+    {
+      path: "/admin",
+      name: "admin",
+      component: Admin
     }
   ]
 });
