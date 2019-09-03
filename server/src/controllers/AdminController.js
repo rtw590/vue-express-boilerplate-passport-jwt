@@ -1,13 +1,12 @@
 const { User } = require("../models");
 
 module.exports = {
-  async admin(req, res) {
+  async isAdmin(req, res) {
     const user = await User.findOne({
       where: {
         id: req.user.id
       }
     });
-    console.log(user);
     if (!user || user.isAdmin === false) {
       res.status(403).send({
         error:
@@ -15,7 +14,25 @@ module.exports = {
       });
     } else {
       res.send({
-        message: "Admin Route protected and working"
+        message: "You have access"
+      });
+    }
+  },
+  async admin(req, res) {
+    const user = await User.findOne({
+      where: {
+        id: req.user.id
+      }
+    });
+    if (!user || user.isAdmin === false) {
+      res.status(403).send({
+        error:
+          "You are not authorized. If this is an error, please login again."
+      });
+    } else {
+      const users = await User.findAll();
+      res.send({
+        users
       });
     }
   }

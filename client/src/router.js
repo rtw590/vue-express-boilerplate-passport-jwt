@@ -5,6 +5,7 @@ import Register from "./views/Register.vue";
 import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
 import Admin from "./views/Admin.vue";
+import AdminUsers from "./views/AdminUsers.vue";
 
 Vue.use(Router);
 
@@ -36,6 +37,11 @@ export default new Router({
       path: "/admin",
       name: "admin",
       component: Admin
+    },
+    {
+      path: "/adminUsers",
+      name: "adminUsers",
+      component: AdminUsers
     }
   ]
 });

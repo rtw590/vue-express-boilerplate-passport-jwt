@@ -15,4 +15,5 @@ module.exports = app => {
   app.post("/login", AuthenticationController.login);
   app.get("/dashboard", isAuthenticated, UserController.dashboard);
   app.get("/admin", isAuthenticated, AdminController.admin);
+  app.get("/isAdmin", isAuthenticated, AdminController.isAdmin);
 };
