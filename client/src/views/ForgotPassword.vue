@@ -5,10 +5,14 @@
       class="mt-6"
       style="max-width: 600px; background-color: rgb(240, 240, 240); border: 1px solid rgb(130, 130, 130); border-radius: 5px; padding: 30px; margin: 0 auto; box-shadow: 0 0 10px rgb(150, 150, 150)"
     >
-      <h1 class="text-center mb-4">Company Name</h1>
+      <h1 class="text-center mb-4">Forgot Password</h1>
 
       <div v-if="this.error != ''">
         <v-alert type="error" v-bind="this.error" style="font-weight: bold;">{{this.error}}</v-alert>
+      </div>
+
+      <div v-if="this.message != ''">
+        <v-alert type="success" v-bind="this.message" style="font-weight: bold;">{{this.message}}</v-alert>
       </div>
 
       <v-form ref="form">
@@ -21,83 +25,67 @@
             color="success"
             height="40"
             label="Email"
-            required
-            :rules="[rules.required]"
             v-model="email"
-          ></v-text-field>
-        </div>
-        <div
-          class="mb-4"
-          style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150)"
-        >
-          <v-text-field
-            background-color="white"
-            color="success"
-            height="40"
-            label="Password"
             required
-            :rules="[rules.required]"
-            v-model="password"
-            type="password"
+            :rules="[rules.required, rules.email]"
           ></v-text-field>
         </div>
+
         <div style="width: 60%; margin: 0 auto;">
           <v-btn
             class="mb-2"
             style="width: 100%; box-shadow: 0 0 5px rgb(150, 150, 150)"
             height="50"
             color="success"
-            @click="login"
-          >Login</v-btn>
+            @click="sendPasswordCode"
+          >Send Reset Code</v-btn>
         </div>
-        <p class="mt-1 text-center link" @click="forgotPasswordPage">Forgot your password?</p>
-
-        <p class="mt-3 text-center link" @click="registerPage">
-          New to our site?
-          <br />Sign Up!
-        </p>
       </v-form>
     </div>
   </div>
 </template>
 
 <script>
-import AuthenticationService from "@/services/AuthenticationService";
+import UserService from "@/services/UserService";
 
 export default {
   data: () => ({
     email: "",
-    password: "",
+    message: "",
     error: "",
     isErrorShake: false,
     rules: {
-      required: value => !!value || "Required."
+      required: value => !!value || "Required.",
+      email: value =>
+        (!!value.includes("@") && !!value.includes(".")) ||
+        "Must be valid email",
+      passwordLength: value =>
+        value.length >= 8 || "Password must be at least 8 characters."
     }
   }),
   methods: {
-    registerPage() {
-      this.$router.push("/register");
-    },
-    forgotPasswordPage() {
-      this.$router.push("/forgot-password");
-    },
-    async login() {
+    async sendPasswordCode() {
       this.$refs.form.validate();
-      if (this.email == "" || this.password == "") {
+      if (
+        this.email == "" ||
+        this.email.includes("@") != true ||
+        this.email.includes(".") != true
+      ) {
+        this.message = "";
         this.error = "Please enter information for all of the fields";
         this.isErrorShake = true;
         setTimeout(() => {
           this.isErrorShake = false;
         }, 800);
       } else {
+        this.error = "";
+        this.message = "";
         try {
-          const response = await AuthenticationService.login({
-            email: this.email,
-            password: this.password
+          const response = await UserService.sendPasswordCode({
+            email: this.email
           });
-          this.$store.dispatch("setToken", response.data.token);
-          this.$store.dispatch("setUser", response.data.user);
-          this.$router.push("/");
+
+          this.message = response.data.message;
         } catch (error) {
           this.error = error.response.data.error;
           this.isErrorShake = true;
@@ -112,20 +100,6 @@ export default {
 </script>
 
 <style scoped>
-.link {
-  color: rgb(57, 93, 255);
-  margin-bottom: 0px;
-}
-
-.link:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.errorForm {
-  border: 1px solid red !important;
-}
-
 .errorShake {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 0.75s;

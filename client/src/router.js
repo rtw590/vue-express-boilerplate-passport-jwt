@@ -6,6 +6,7 @@ import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
 import Admin from "./views/Admin.vue";
 import AdminUsers from "./views/AdminUsers.vue";
+import ForgotPassword from "./views/ForgotPassword.vue";
 
 Vue.use(Router);
 
@@ -42,6 +43,11 @@ export default new Router({
       path: "/adminUsers",
       name: "adminUsers",
       component: AdminUsers
+    },
+    {
+      path: "/forgot-password",
+      name: "forgotPassword",
+      component: ForgotPassword
     }
   ]
 });
