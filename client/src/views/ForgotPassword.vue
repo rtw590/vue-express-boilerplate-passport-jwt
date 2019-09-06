@@ -31,12 +31,70 @@
           ></v-text-field>
         </div>
 
+        <div
+          class="mb-4"
+          style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150); display: none;"
+          v-bind:class="{ showBox: success }"
+        >
+          <v-text-field
+            background-color="white"
+            color="success"
+            height="40"
+            label="Reset Code"
+            v-model="resetCode"
+            required
+          ></v-text-field>
+        </div>
+
+        <div
+          class="mb-4"
+          style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150); display: none;"
+          v-bind:class="{ showBox: success }"
+        >
+          <v-text-field
+            background-color="white"
+            color="success"
+            height="40"
+            label="Password"
+            v-model="password"
+            type="password"
+            required
+          ></v-text-field>
+        </div>
+        <div
+          class="mb-4"
+          style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150); display: none;"
+          v-bind:class="{ showBox: success }"
+        >
+          <v-text-field
+            background-color="white"
+            color="success"
+            height="40"
+            label="Confirm Password"
+            v-model="password2"
+            type="password"
+            required
+          ></v-text-field>
+        </div>
+
         <div style="width: 60%; margin: 0 auto;">
           <v-btn
             class="mb-2"
-            style="width: 100%; box-shadow: 0 0 5px rgb(150, 150, 150)"
+            style="width: 100%; box-shadow: 0 0 5px rgb(150, 150, 150); display: none"
             height="50"
             color="success"
+            v-bind:class="{ showBox: success }"
+            @click="updatePassword"
+          >Reset Password</v-btn>
+        </div>
+
+        <div style="width: 60%; margin: 0 auto;">
+          <v-btn
+            class="mb-2"
+            style="width: 100%; box-shadow: 0 0 5px rgb(150, 150, 150);"
+            height="50"
+            color="success"
+            v-bind:class="{ hideBox: success }"
             @click="sendPasswordCode"
           >Send Reset Code</v-btn>
         </div>
@@ -52,7 +110,11 @@ export default {
   data: () => ({
     email: "",
     message: "",
+    resetCode: "",
+    password: "",
+    password2: "",
     error: "",
+    success: false,
     isErrorShake: false,
     rules: {
       required: value => !!value || "Required.",
@@ -86,6 +148,54 @@ export default {
           });
 
           this.message = response.data.message;
+          this.success = true;
+        } catch (error) {
+          this.error = error.response.data.error;
+          this.isErrorShake = true;
+          setTimeout(() => {
+            this.isErrorShake = false;
+          }, 800);
+        }
+      }
+    },
+    async updatePassword() {
+      // Frontend validation to ensure that all fields are filled out correctly
+      this.error = "";
+      this.message = "";
+      if (
+        this.email == "" ||
+        this.resetCode == "" ||
+        this.password == "" ||
+        this.password2 == ""
+      ) {
+        this.error = "Please fill in all of the fields";
+        this.isErrorShake = true;
+        setTimeout(() => {
+          this.isErrorShake = false;
+        }, 800);
+      } else if (this.password.length < 8 || this.password2.length < 8) {
+        this.error = "Password must be at least 8 characters long";
+        this.isErrorShake = true;
+        setTimeout(() => {
+          this.isErrorShake = false;
+        }, 800);
+      } else if (this.password !== this.password2) {
+        this.error = "Passwords do not match";
+        this.isErrorShake = true;
+        setTimeout(() => {
+          this.isErrorShake = false;
+        }, 800);
+      } else {
+        // Everything filled properly so we send the info to the backend
+        try {
+          const response = await UserService.updatePassword({
+            email: this.email,
+            password: this.password,
+            resetCode: this.resetCode
+          });
+
+          this.message = response.data.message;
+          this.success = false;
         } catch (error) {
           this.error = error.response.data.error;
           this.isErrorShake = true;
@@ -100,6 +210,14 @@ export default {
 </script>
 
 <style scoped>
+.showBox {
+  display: block !important;
+}
+
+.hideBox {
+  display: none !important;
+}
+
 .errorShake {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 0.75s;
