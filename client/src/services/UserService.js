@@ -6,5 +6,8 @@ export default {
   },
   updatePassword(credentials) {
     return Api().post("updatePassword", credentials);
+  },
+  changePassword(credentials) {
+    return Api().post("changePassword", credentials);
   }
 };

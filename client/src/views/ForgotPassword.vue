@@ -97,6 +97,12 @@
             v-bind:class="{ hideBox: success }"
             @click="sendPasswordCode"
           >Send Reset Code</v-btn>
+          <p
+            class="mt-1 text-center link"
+            @click="loginPage"
+            style="display: none;"
+            v-bind:class="{ showBox: passwordReset }"
+          >Go to login page</p>
         </div>
       </v-form>
     </div>
@@ -115,6 +121,7 @@ export default {
     password2: "",
     error: "",
     success: false,
+    passwordReset: false,
     isErrorShake: false,
     rules: {
       required: value => !!value || "Required.",
@@ -196,6 +203,7 @@ export default {
 
           this.message = response.data.message;
           this.success = false;
+          this.passwordReset = true;
         } catch (error) {
           this.error = error.response.data.error;
           this.isErrorShake = true;
@@ -204,12 +212,25 @@ export default {
           }, 800);
         }
       }
+    },
+    loginPage() {
+      this.$router.push("/login");
     }
   }
 };
 </script>
 
 <style scoped>
+.link {
+  color: rgb(57, 93, 255);
+  margin-bottom: 0px;
+}
+
+.link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .showBox {
   display: block !important;
 }

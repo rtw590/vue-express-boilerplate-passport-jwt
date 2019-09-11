@@ -151,5 +151,51 @@ module.exports = {
         error: "Failed to send password reset code"
       });
     }
+  },
+  async changePassword(req, res) {
+    try {
+      const { password, currentPassword } = req.body;
+      const user = await User.findOne({
+        where: {
+          id: req.user.id
+        }
+      });
+      console.log(user);
+      // If no user is found send back an error message to the suer
+      if (!user) {
+        return res.status(403).send({
+          error: "No user found with this email address"
+        });
+      }
+
+      // TODO: Check to see if submitted password is the same as what is in the database
+
+      // Check if new password is 8 characters long
+      if (password.length < 8) {
+        return res.status(403).send({
+          error: "Password must be at least 8 characters"
+        });
+      }
+
+      // Bcrypt the users password and save the change
+      let passwordHashed = password;
+      passwordHashed = bcrypt.hashSync(
+        passwordHashed,
+        bcrypt.genSaltSync(5),
+        null
+      );
+      user.password = passwordHashed;
+
+      user.save();
+
+      // Everything passed so send the user back a success message
+      res.send({
+        message: "Password changed. You can now login"
+      });
+    } catch (err) {
+      res.status(400).send({
+        error: "TODO: Update error message here or remove try catch!"
+      });
+    }
   }
 };

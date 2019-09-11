@@ -18,4 +18,5 @@ module.exports = app => {
   app.get("/isAdmin", isAuthenticated, AdminController.isAdmin);
   app.post("/sendPasswordCode", UserController.sendPasswordCode);
   app.post("/updatePassword", UserController.updatePassword);
+  app.post("/changePassword", isAuthenticated, UserController.changePassword);
 };

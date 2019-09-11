@@ -6,6 +6,7 @@
     <div v-if="$store.state.isUserLoggedIn">
       <h1>Welcome back, {{$store.state.user.email}}!</h1>
     </div>
+    <p class="mt-1 text-left link" @click="changePasswordPage">Change Password</p>
   </div>
 </template>
 
@@ -27,6 +28,22 @@ export default {
       this.error = error.response.data.error;
     }
   },
-  methods: {}
+  methods: {
+    changePasswordPage() {
+      this.$router.push("/change-password");
+    }
+  }
 };
 </script>
+
+<style scoped>
+.link {
+  color: rgb(57, 93, 255);
+  margin-bottom: 0px;
+}
+
+.link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>
