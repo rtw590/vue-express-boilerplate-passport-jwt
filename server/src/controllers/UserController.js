@@ -168,7 +168,13 @@ module.exports = {
         });
       }
 
-      // TODO: Check to see if submitted password is the same as what is in the database
+      // Check to see if current password matches what is in the databse
+      const isPasswordValid = await user.comparePassword(currentPassword);
+      if (!isPasswordValid) {
+        return res.status(403).send({
+          error: "Current password is incorrect"
+        });
+      }
 
       // Check if new password is 8 characters long
       if (password.length < 8) {
@@ -190,11 +196,11 @@ module.exports = {
 
       // Everything passed so send the user back a success message
       res.send({
-        message: "Password changed. You can now login"
+        message: "Password updated!"
       });
     } catch (err) {
       res.status(400).send({
-        error: "TODO: Update error message here or remove try catch!"
+        error: "An error has occured"
       });
     }
   }

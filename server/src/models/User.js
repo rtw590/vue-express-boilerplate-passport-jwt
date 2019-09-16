@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
       password: DataTypes.STRING,
       resetCode: {
         type: DataTypes.INTEGER,

@@ -7,6 +7,7 @@
       <h1>Welcome back, {{$store.state.user.email}}!</h1>
     </div>
     <p class="mt-1 text-left link" @click="changePasswordPage">Change Password</p>
+    <p class="mt-1 text-left link" @click="logout">Logout</p>
   </div>
 </template>
 
@@ -31,6 +32,11 @@ export default {
   methods: {
     changePasswordPage() {
       this.$router.push("/change-password");
+    },
+    logout() {
+      this.$store.dispatch("setToken", null);
+      this.$store.dispatch("setUser", null);
+      this.$router.push("/");
     }
   }
 };

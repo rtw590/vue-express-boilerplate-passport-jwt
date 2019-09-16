@@ -3,8 +3,7 @@
     <div v-if="this.error != ''">
       <v-alert type="error" v-bind="this.error" style="font-weight: bold;">{{this.error}}</v-alert>
     </div>
-    <div v-if="$store.state.isUserLoggedIn">
-      <h1>Welcome back, {{$store.state.user.email}}!</h1>
+    <div v-if="$store.state.isUserLoggedIn" class="ml-3 mr-3">
       <a>Admin Home</a>
       <div>
         <h3>Models</h3>

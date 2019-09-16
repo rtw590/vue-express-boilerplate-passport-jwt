@@ -6,7 +6,9 @@
     <div v-if="$store.state.isUserLoggedIn" class="ml-3 mr-3">
       <a @click="adminPage">Admin Home</a>
       <span class="ml-1 mr-1">></span>
-      <a>Users</a>
+      <a @click="usersPage">Users</a>
+      <span class="ml-1 mr-1">></span>
+      <a>Selected User</a>
 
       <v-row no-gutters>
         <v-col cols="12" sm="4">
@@ -22,24 +24,24 @@
 
       <div class="mt-1 mb-1" style="height: 1px; background-color: rgb(200, 200, 200);"></div>
 
-      <div v-for="user in this.users" :key="user.id">
+      <div>
         <v-row no-gutters>
           <v-col cols="12" sm="4">
-            <h3 style="cursor: pointer;" @click="selectUser(user)">{{user.email}}</h3>
+            <h3 style="cursor: pointer;">{{$store.state.selectedUser.email}}</h3>
           </v-col>
           <v-col cols="12" sm="4">
-            <h3 v-if="user.isAdmin">
+            <h3 v-if="$store.state.selectedUser.isAdmin">
               <v-icon color="green">mdi-check-bold</v-icon>
             </h3>
-            <h3 v-if="!user.isAdmin">
+            <h3 v-if="!$store.state.selectedUser.isAdmin">
               <v-icon>mdi-close-circle</v-icon>
             </h3>
           </v-col>
           <v-col cols="12" sm="4">
-            <h3 v-if="user.isActive">
+            <h3 v-if="$store.state.selectedUser.isActive">
               <v-icon color="green">mdi-check-bold</v-icon>
             </h3>
-            <h3 v-if="!user.isActive">
+            <h3 v-if="!$store.state.selectedUser.isActive">
               <v-icon>mdi-close-circle</v-icon>
             </h3>
           </v-col>
@@ -74,9 +76,11 @@ export default {
     adminPage() {
       this.$router.push("/admin");
     },
+    usersPage() {
+      this.$router.push("/adminUsers");
+    },
     selectUser(user) {
       this.$store.dispatch("setSelectedUser", user);
-      this.$router.push("/adminSelectedUser");
     }
   }
 };

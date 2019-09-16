@@ -15,7 +15,7 @@
         <v-alert type="success" v-bind="this.message" style="font-weight: bold;">{{this.message}}</v-alert>
       </div>
 
-      <v-form ref="form">
+      <v-form ref="form" v-bind:class="{ hideBox: success }">
         <div
           class="mb-4"
           style="background-color: white; padding: 5px; border: 1px solid rgb(130, 130, 130); border-radius: 5px; box-shadow: 0 0 5px rgb(150, 150, 150)"
@@ -61,7 +61,7 @@
             :rules="[rules.required, rules.passwordLength]"
           ></v-text-field>
         </div>
-        <div style="width: 60%; margin: 0 auto;">
+        <div style="width: 80%; margin: 0 auto;">
           <v-btn
             class="mb-2"
             style="width: 100%; box-shadow: 0 0 5px rgb(150, 150, 150)"
@@ -86,6 +86,7 @@ export default {
     password2: "",
     message: "",
     error: "",
+    success: false,
     isErrorShake: false,
     rules: {
       required: value => !!value || "Required.",
@@ -96,15 +97,15 @@ export default {
         value.length >= 8 || "Password must be at least 8 characters."
     }
   }),
-  async mounted() {
-    try {
-      const response = await AuthenticationService.dashboard();
-    } catch (error) {
-      // Credentials failed. Logout user and instruct them to login
-      this.$store.dispatch("setToken", null);
-      this.$store.dispatch("setUser", null);
-      this.error = error.response.data.error;
-    }
+  mounted() {
+    // try {
+    //   const response = await AuthenticationService.dashboard();
+    // } catch (error) {
+    //   // Credentials failed. Logout user and instruct them to login
+    //   this.$store.dispatch("setToken", null);
+    //   this.$store.dispatch("setUser", null);
+    //   this.error = error.response.data.error;
+    // }
   },
   methods: {
     async changePassword() {
@@ -135,6 +136,7 @@ export default {
               currentPassword: this.currentPassword
             });
             this.error = "";
+            this.success = true;
             this.message = response.data.message;
           } catch (error) {
             this.error = error.response.data.error;
@@ -151,6 +153,10 @@ export default {
 </script>
 
 <style scoped>
+.hideBox {
+  display: none !important;
+}
+
 .errorShake {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 0.75s;

@@ -9,7 +9,8 @@ export default new Vuex.Store({
   state: {
     user: null,
     token: null,
-    isUserLoggedIn: false
+    isUserLoggedIn: false,
+    selectedUser: null
   },
   mutations: {
     setToken(state, token) {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     setUser(state, user) {
       state.user = user;
+    },
+    setSelectedUser(state, user) {
+      state.selectedUser = user;
     }
   },
   actions: {
@@ -30,6 +34,9 @@ export default new Vuex.Store({
     },
     setUser({ commit }, user) {
       commit("setUser", user);
+    },
+    setSelectedUser({ commit }, user) {
+      commit("setSelectedUser", user);
     }
   },
   plugins: [createPersistedState()]
