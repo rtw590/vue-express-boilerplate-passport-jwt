@@ -33,11 +33,22 @@ module.exports = {
           email: email
         }
       });
+
+      // Send error if no user exists
       if (!user) {
         return res.status(403).send({
           error: "The login information is incorrect"
         });
       }
+
+      if (!user.isActive) {
+        return res.status(403).send({
+          error:
+            "Your account is inactive. If this is a mistake, please contact us."
+        });
+      }
+
+      // CHeck to see if the password is correct
       const isPasswordValid = await user.comparePassword(password);
       if (!isPasswordValid) {
         return res.status(403).send({

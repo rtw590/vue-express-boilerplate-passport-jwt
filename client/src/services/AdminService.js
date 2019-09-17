@@ -6,5 +6,8 @@ export default {
   },
   isAdmin() {
     return Api().get("isAdmin");
+  },
+  active(user) {
+    return Api().post("active", user);
   }
 };
